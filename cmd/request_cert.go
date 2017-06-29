@@ -40,6 +40,10 @@ func NewCertRequestCommand() cli.Command {
 				Name:  "passphrase",
 				Usage: "Passphrase to encrypt private-key PEM block",
 			},
+			cli.BoolFlag{
+				Name: "no-password",
+				Usage: "Do not ask for a passowrd to encrypt the private-key PEM block",
+			},
 			cli.IntFlag{
 				Name:  "key-bits",
 				Value: 2048,
@@ -144,7 +148,7 @@ func newCertAction(c *cli.Context) {
 	var passphrase []byte
 	if c.IsSet("passphrase") {
 		passphrase = []byte(c.String("passphrase"))
-	} else {
+	} else if !c.Bool("no-password") {
 		passphrase, err = createPassPhrase()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
